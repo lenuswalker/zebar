@@ -332,6 +332,15 @@ impl WidgetFactory {
         .window()
         .set_tool_window(!widget_config.shown_in_taskbar);
 
+      // On Windows, check if ZOrder is TopMost and set window to always
+      // be on top.
+      #[cfg(target_os = "windows")]
+      {
+        if widget_config.z_order == crate::config::ZOrder::TopMost {
+          let _ = window.as_ref().window().set_always_on_top();
+        }
+      }
+
       // On MacOS, we need to set the window as above the menu bar for it
       // to truly be always on top.
       #[cfg(target_os = "macos")]
